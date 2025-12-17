@@ -21,6 +21,7 @@ for (let t = 0; t < T; t++) {
     [0, -1],
   ];
 
+  //배추 있는 곳 마킹
   for (let i = 0; i < K; i++) {
     const [X, Y] = input[inputIndex].split(" ").map(Number);
     graph[Y + 1][X + 1] = 1;
@@ -28,14 +29,27 @@ for (let t = 0; t < T; t++) {
   }
 
   function dfs(y, x) {
-    if (visited[y][x]) return;
-    visited[y][x] = true;
-    for (const dItem of direction) {
-      const [dy, dx] = dItem;
-      const nextY = y + dy;
-      const nextX = x + dx;
-      if (!visited[nextY][nextX] && graph[nextY][nextX] === 1) {
-        dfs(nextY, nextX);
+    const stack = [
+      [
+        [y, x],
+        [-1, -1],
+      ],
+    ];
+
+    while (stack.length) {
+      const [curY, curX] = stack.pop()[0];
+      if (visited[curY][curX]) continue;
+      visited[curY][curX] = 1;
+      for (const dItem of direction) {
+        const [dy, dx] = dItem;
+        const newY = curY + dy;
+        const newX = curX + dx;
+        if (!visited[newY][newX] && graph[newY][newX] === 1) {
+          stack.push([
+            [newY, newX],
+            [curY, curX],
+          ]);
+        }
       }
     }
   }

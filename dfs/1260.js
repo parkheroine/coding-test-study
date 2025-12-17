@@ -75,16 +75,25 @@ function dfsSolution() {
   const visited = new Array(N + 1).fill(false);
   const result = [];
 
-  function dfs(index) {
-    if (visited[index]) return;
-    visited[index] = true;
-    result.push(index);
-    for (const neighbor of graph[index]) {
-      dfs(neighbor);
+  function dfs() {
+    const stack = [[V, -1]];
+
+    while (stack.length) {
+      let [cur, parent] = stack.pop();
+      if (visited[cur]) continue;
+      stack.push([cur, parent]);
+      visited[cur] = true;
+      result.push(cur);
+
+      const nodes = graph[cur];
+      for (let i = nodes.length - 1; i >= 0; i--) {
+        const node = nodes[i];
+        if (!visited[node]) stack.push([node, cur]);
+      }
     }
   }
 
-  dfs(V);
+  dfs();
 
   return result;
 }

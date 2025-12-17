@@ -28,16 +28,23 @@ function solution(N, graph) {
   const visited = new Array(N).fill(false);
   let answer = -1;
 
-  function dfs(index) {
-    if (visited[index]) return;
-    visited[index] = true;
-    answer++;
-    for (const neighbor of graph[index]) {
-      dfs(neighbor);
+  function dfs() {
+    const stack = [[1, -1]];
+
+    while (stack.length) {
+      const [cur, parent] = stack.pop();
+      if (visited[cur]) continue;
+      stack.push([cur, parent]);
+      visited[cur] = 1;
+      answer++;
+
+      for (const node of graph[cur]) {
+        if (!visited[node]) stack.push([node, cur]);
+      }
     }
   }
-  dfs(1);
 
+  dfs();
   return answer;
 }
 
