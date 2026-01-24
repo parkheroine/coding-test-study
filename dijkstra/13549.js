@@ -10,85 +10,68 @@ const input = fs
   .map((el) => el.split(" ").map(Number));
 
 const [START, END] = input[0];
+const MAX = 100000;
 
-class MinHeap {
+class Deque {
   constructor() {
-    this.heap = [];
+    this.nodes = {};
+    this.head = 0;
+    this.tail = 0;
   }
-
-  get size() {
-    return this.heap.length;
-  }
-
   push(value) {
-    this.heap.push(value);
-    let i = this.heap.length - 1;
-    while (i > 0) {
-      const p = Math.floor((i - 1) / 2);
-      if (this.heap[p][1] < this.heap[i][1]) break;
-      [this.heap[p], this.heap[i]] = [this.heap[i], this.heap[p]];
-      i = p;
-    }
+    this.nodes[this.tail++] = value;
   }
-
-  pop() {
-    if (this.size === 1) return this.heap.pop();
-    if (this.size === 0) return null;
-    const peek = this.heap[0];
-    this.heap[0] = this.heap.pop();
-    let i = 0;
-    while (true) {
-      const l = i * 2 + 1;
-      const r = i * 2 + 2;
-      let s = i;
-      if (l < this.size && this.heap[l][1] < this.heap[s][1]) s = l;
-      if (r < this.size && this.heap[r][1] < this.heap[s][1]) s = r;
-      if (i === s) break;
-      [this.heap[s], this.heap[i]] = [this.heap[i], this.heap[s]];
-      i = s;
-    }
-
-    return peek;
+  unshift(value) {
+    this.nodes[--this.head] = value;
+  }
+  shift() {
+    if (this.head === this.tail) return null;
+    const value = this.nodes[this.head];
+    delete this.nodes[this.head++];
+    return value;
+  }
+  get length() {
+    return this.tail - this.head;
   }
 }
 
 function solution() {
-  const MAX = 100000;
-  const costs = Array(MAX + 1).fill(Infinity);
+  if (START >= END) {
+    return START - END;
+  }
+  const dists = Array(MAX + 1).fill(Infinity);
+  const queue = new Deque();
+  queue.push([START, 0]);
+  dists[START] = 0;
 
-  function dijkstra(start) {
-    const pq = new MinHeap();
-    pq.push([start, 0]);
-    costs[start] = 0;
+  while (queue.length) {
+    const [cur, time] = queue.shift();
+    if (cur === END) {
+      return time;
+    }
+    if (time > dists[cur]) continue;
 
-    while (pq.size) {
-      const [curNode, curCost] = pq.pop();
+    const cases = [
+      [cur * 2, 0],
+      [cur + 1, 1],
+      [cur - 1, 1],
+    ];
 
-      if (curCost > costs[curNode]) {
+    for (const [newPosition, cost] of cases) {
+      if (newPosition < 0 || newPosition > MAX) {
         continue;
       }
-
-      const cases = [
-        [curNode + 1, 1],
-        [curNode - 1, 1],
-        [curNode * 2, 0],
-      ];
-      for (const [adj, cost] of cases) {
-        if (adj > MAX) {
-          continue;
-        }
-        const newCost = curCost + cost;
-        if (newCost < costs[adj]) {
-          costs[adj] = newCost;
-          pq.push([adj, newCost]);
+      const newTime = time + cost;
+      if (dists[newPosition] > newTime) {
+        dists[newPosition] = newTime;
+        if (cost === 0) {
+          queue.unshift([newPosition, time + 0]);
+        } else {
+          queue.push([newPosition, time + 1]);
         }
       }
     }
   }
-
-  dijkstra(START);
-
-  return costs[END];
 }
 
 console.log(solution());
