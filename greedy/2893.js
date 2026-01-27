@@ -6,17 +6,17 @@ const input = fs.readFileSync(filePath).toString().trim().split("\n");
 const N = Number(input[0]);
 
 function solution() {
-  const dp = [];
-  dp[1] = Infinity;
-  dp[2] = Infinity;
-  dp[3] = 1;
-  dp[4] = Infinity;
-  dp[5] = 1;
-  for (let i = 6; i <= N; i++) {
-    dp[i] = Math.min(dp[i - 3], dp[i - 5]) + 1;
-  }
+  let remained = N;
+  let result = 0;
 
-  return dp[N] === Infinity ? -1 : dp[N];
+  while (remained >= 0) {
+    if (remained % 5 === 0) {
+      return result + remained / 5;
+    }
+    remained -= 3;
+    result++;
+  }
+  return -1;
 }
 
 console.log(solution());
