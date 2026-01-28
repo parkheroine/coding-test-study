@@ -11,11 +11,11 @@ const input = fs
 
 function solution() {
   const N = input[0];
-  let i = 0;
-  let result = 0;
-  while (result <= N) {
+  let i = 1;
+  let sum = 0;
+  while (sum + i <= N) {
+    sum += i;
     i++;
-    result = (i * (i + 1)) / 2;
   }
 
   return i - 1;
