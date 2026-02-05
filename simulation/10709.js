@@ -7,28 +7,18 @@ const input = fs.readFileSync(filePath).toString().trim().split("\n");
 const [H, W] = input[0].split(" ").map(Number);
 
 function solution() {
-  const clouds = [];
-  const result = [];
+  const result = Array.from({ length: H }, () => Array(W).fill(-1));
+
   for (let i = 1; i <= H; i++) {
-    result.push([]);
+    let cloudCount = -1;
     for (let j = 0; j < W; j++) {
       const value = input[i][j];
       if (value === "c") {
-        result[i - 1].push(0);
-        clouds.push([i - 1, j]);
-      } else {
-        result[i - 1].push(-1);
+        cloudCount = 0;
+      } else if (cloudCount !== -1) {
+        cloudCount++;
       }
-    }
-  }
-
-  for (const [cY, cX] of clouds) {
-    let xIndex = cX + 1;
-    let tic = 1;
-    while (xIndex < W && result[cY][xIndex] === -1) {
-      result[cY][xIndex] = tic;
-      xIndex++;
-      tic++;
+      result[i - 1][j] = cloudCount;
     }
   }
 
