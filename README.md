@@ -10,4 +10,5 @@
 | 4주차 | Hash, DP                        |    ✅     |
 | 5주차 | Dijkstra, DP/Binary Search 복습 |    ✅     |
 | 6주차 | Greedy                          |    ✅     |
-| 7주차 | 구현                            |    🏃     |
+| 7주차 | 구현                            |    ✅     |
+| 8주차 | 문자열/구현, Dijkstra 복습      |    🏃     |
