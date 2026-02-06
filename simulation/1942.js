@@ -7,46 +7,34 @@ const input = fs
   .toString()
   .trim()
   .split("\n")
-  .map((el) => el.split(" ").map((item) => item.split(":")));
+  .map((el) => el.split(" "));
 
 function solution() {
   const result = [];
 
-  const getClockInt = (arr) => Number(arr.join(""));
+  for (const [start, end] of input) {
+    let [sH, sM, sS] = start.split(":").map(Number);
+    const [eH, eM, eS] = end.split(":").map(Number);
 
-  const getFormattedTimeStr = (value) => {
-    return `${Math.floor(value / 10) === 0 ? "0" + value : value}`;
-  };
+    let ans = 0;
 
-  for (const [startStrArr, endStrArr] of input) {
-    let ans = getClockInt(startStrArr) % 3 === 0 ? 1 : 0;
+    while (true) {
+      const timeInt = sH * 10000 + sM * 100 + sS;
+      if (timeInt % 3 === 0) ans++;
 
-    if (getClockInt(startStrArr) > getClockInt(endStrArr)) {
-      endStrArr[0] = `${Number(endStrArr[0]) + 24}`; // 시간 통일
-    }
-    while (getClockInt(startStrArr) < getClockInt(endStrArr)) {
-      const startNum = startStrArr.map(Number);
-      const [sHour, sMin, sSec] = startNum;
-
-      let newSec = sSec + 1;
-      let newMin = sMin;
-      let newHour = sHour;
-      if (newSec === 60) {
-        newMin += 1;
-        newSec = 0;
+      if (sH === eH && sM === eM && sS === eS) break;
+      sS++;
+      if (sS === 60) {
+        sS = 0;
+        sM += 1;
       }
-      if (newMin === 60) {
-        newHour += 1;
-        newMin = 0;
+      if (sM === 60) {
+        sM = 0;
+        sH += 1;
       }
 
-      startStrArr[0] = getFormattedTimeStr(newHour);
-      startStrArr[1] = getFormattedTimeStr(newMin);
-      startStrArr[2] = getFormattedTimeStr(newSec);
-
-      const clockInt = Number(startStrArr.join(""));
-      if (clockInt % 3 === 0) {
-        ans++;
+      if (sH === 24) {
+        sH = 0;
       }
     }
 
