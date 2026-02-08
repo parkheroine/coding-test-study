@@ -9,50 +9,33 @@ const input = fs
   .split("\n")
   .map((el) => el.split(" ").map(Number));
 const [W, H] = input[0];
-const [dD, pD] = input[input.length - 1];
+const [dir, position] = input[input.length - 1];
 
 function solution() {
-  const getDistance = ([dT, pT]) => {
-    if (dD === dT) {
-      return Math.abs(pD - pT);
-    }
-    if ((dD === 1 && dT === 2) || (dD === 2 && dT === 1)) {
-      //남-북
-      return H + Math.min(pD + pT, 2 * W - (pD + pT));
-    }
-    if ((dD === 3 && dT === 4) || (dD === 4 && dT === 3)) {
-      //동-서
-      return W + Math.min(pD + pT, 2 * H - (pD + pT));
-    }
-    if ((dD === 2 && dT === 3) || (dD === 3 && dT === 2)) {
-      //남서
-      const pSouth = dD === 2 ? pD : pT;
-      const pWest = dD === 3 ? pD : pT;
-      return pSouth + H - pWest;
-    }
-    if ((dD === 1 && dT === 4) || (dD === 4 && dT === 1)) {
-      //북동
-      const pNorth = dD === 1 ? pD : pT;
-      const pEast = dD === 4 ? pD : pT;
-      return W - pNorth + pEast;
-    }
-    if ((dD === 2 && dT === 4) || (dD === 4 && dT === 2)) {
-      //남동
-      const pSouth = dD === 2 ? pD : pT;
-      const pEast = dD === 4 ? pD : pT;
-      return W - pSouth + H - pEast;
-    }
-    if ((dD === 1 && dT === 3) || (dD === 3 && dT === 1)) {
-      //북서
-      const pNorth = dD === 1 ? pD : pT;
-      const pWest = dD === 3 ? pD : pT;
-      return pNorth + pWest;
-    }
+  const posList = [];
+  //시계방향
+  const getPos = (dir, dist) => {
+    if (dir === 1) return dist;
+    if (dir === 2) return W + H + W - dist;
+    if (dir === 3) return W + H + W + H - dist;
+    if (dir === 4) return W + dist;
   };
 
-  let result = 0;
+  const dPos = getPos(dir, position);
+
   for (let i = 2; i < input.length - 1; i++) {
-    result += getDistance(input[i]);
+    posList.push(getPos(...input[i]));
+  }
+
+  const totalLength = 2 * (W + H);
+  let result = 0;
+  for (let i = 0; i < posList.length; i++) {
+    //시계 방향
+    const d1 = Math.abs(posList[i] - dPos);
+    //반시계 방향
+    const d2 = totalLength - d1;
+
+    result += Math.min(d1, d2);
   }
   return result;
 }
