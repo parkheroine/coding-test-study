@@ -11,4 +11,5 @@
 | 5주차 | Dijkstra, DP/Binary Search 복습 |    ✅     |
 | 6주차 | Greedy                          |    ✅     |
 | 7주차 | 구현                            |    ✅     |
-| 8주차 | 문자열/구현, Dijkstra 복습      |    🏃     |
+| 8주차 | 문자열/구현                     |    ✅     |
+| 9주차 | Stack, DFS 추가 문제            |    🏃     |
