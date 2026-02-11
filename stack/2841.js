@@ -10,23 +10,47 @@ const input = fs
   .map((el) => el.split(" ").map(Number));
 const [N, P] = input[0];
 
+class Stack {
+  constructor() {
+    this.store = [];
+  }
+
+  push(value) {
+    this.store.push(value);
+  }
+  pop() {
+    if (this.size === 0) return -1;
+    return this.store.pop();
+  }
+
+  get size() {
+    return this.store.length;
+  }
+  get top() {
+    return this.store[this.store.length - 1] || -1;
+  }
+}
+
 function solution() {
-  const melodyArray = Array.from({ length: N + 1 }, () => []);
+  const melodyArray = Array(N + 1);
   let result = 0;
 
   for (let i = 1; i < input.length; i++) {
     const [melody, plat] = input[i];
-    while ((melodyArray[melody][melodyArray[melody].length - 1] ?? 0) > plat) {
-      melodyArray[melody].pop();
-      result++;
+    if (!melodyArray[melody]) {
+      melodyArray[melody] = new Stack();
     }
-    if (melodyArray[melody][melodyArray[melody].length - 1] === plat) {
-    } else {
-      melodyArray[melody].push(plat);
+    const curPlat = melodyArray[melody];
+
+    while (curPlat.size && curPlat.top > plat) {
+      curPlat.pop();
       result++;
     }
 
-    melodyArray[melody].sort((a, b) => a - b);
+    if (curPlat.top !== plat) {
+      result++;
+      curPlat.push(plat);
+    }
   }
 
   return result;
