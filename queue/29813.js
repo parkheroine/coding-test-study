@@ -9,56 +9,32 @@ const input = fs
   .split("\n")
   .map((el) => el.split(" "));
 
-class Queue {
-  constructor() {
-    this.store = {};
-    this.front = 0;
-    this.rear = 0;
-  }
-
-  get size() {
-    return this.rear - this.front;
-  }
-
-  push(value) {
-    this.store[this.rear++] = value;
-  }
-
-  pop() {
-    if (this.size === 0) return null;
-    const temp = this.store[this.front];
-    delete this.store[this.front];
-    this.front++;
-
-    if (this.front === this.rear) {
-      this.front = 0;
-      this.rear = 0;
-    }
-
-    return temp;
-  }
-}
-
 function solution() {
-  const queue = new Queue();
+  let students = [];
   for (let i = 1; i < input.length; i++) {
-    const [name, strNum] = input[i];
-    const num = Number(strNum);
-    queue.push([name, num]);
+    students.push({
+      name: input[i][0],
+      num: Number(input[i][1]),
+    });
   }
 
-  while (queue.size > 1) {
-    const [topName, topNum] = queue.pop();
-    for (let i = 0; i < topNum - 1; i++) {
-      const cur = queue.pop();
-      queue.push(cur);
+  let currentIndex = 0;
+
+  while (students.length > 1) {
+    const leader = students[currentIndex];
+    students.splice(currentIndex, 1);
+
+    const skip = leader.num - 1;
+    currentIndex = (currentIndex + skip) % students.length;
+
+    students.splice(currentIndex, 1);
+
+    if (currentIndex >= students.length) {
+      currentIndex = 0;
     }
-    queue.pop();
   }
 
-  const [topName, topNum] = queue.pop();
-
-  return topName;
+  return students[0].name;
 }
 
 console.log(solution());
