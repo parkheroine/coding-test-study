@@ -14,4 +14,5 @@
 | 8주차  | 문자열/구현                             |    ✅     |
 | 9주차  | Stack, DFS 추가 문제                    |    ✅     |
 | 10주차 | Queue, BFS 추가 문제                    |    ✅     |
-| 11주차 | Priority Queue, Binary Search 추가 문제 |    🏃     |
+| 11주차 | Priority Queue, Binary Search 추가 문제 |    ✅     |
+| 12주차 | Hash, DP 추가 문제                      |    🏃     |
