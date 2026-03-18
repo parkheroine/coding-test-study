@@ -42,41 +42,50 @@ class MinHeap {
     return top;
   }
 }
+
 function solution() {
   const [N, M, T] = input[0].split(" ").map(Number);
-  let index = 1;
   const graph = Array.from({ length: N + 1 }, () => []);
-  const result = [];
-  for (let i = index; i < index + M; i++) {
+
+  for (let i = 1; i <= M; i++) {
     const [u, v, h] = input[i].split(" ").map(Number);
     graph[u].push([v, h]);
   }
-  index += M;
 
-  for (let i = index; i < index + T; i++) {
-    const maxH = Array(N + 1).fill(Infinity);
-    const [S, E] = input[i].split(" ").map(Number);
+  // 모든 시작점에 대해 미리 구해두기 (N번 다익스트라)
+  const allPairsDist = Array.from({ length: N + 1 }, () =>
+    Array(N + 1).fill(Infinity),
+  );
+
+  for (let startNode = 1; startNode <= N; startNode++) {
     const pq = new MinHeap();
-    pq.push([S, 0]);
-    maxH[S] = 0;
+    pq.push([startNode, 0]);
+    allPairsDist[startNode][startNode] = 0;
 
     while (pq.size) {
       const [cur, h] = pq.pop();
-      if (h > maxH[cur]) continue;
+      if (h > allPairsDist[startNode][cur]) continue;
 
       for (const [next, nh] of graph[cur]) {
-        const max = Math.max(h, nh);
-        if (maxH[next] > max) {
-          maxH[next] = max;
-          pq.push([next, max]);
+        const nextMax = Math.max(h, nh);
+        if (allPairsDist[startNode][next] > nextMax) {
+          allPairsDist[startNode][next] = nextMax;
+          pq.push([next, nextMax]);
         }
       }
     }
-
-    result.push(maxH[E] === Infinity ? -1 : maxH[E]);
   }
 
-  return result.join("\n");
+  // 질문은 O(1)로 처리
+  const results = [];
+  let queryStart = M + 1;
+  for (let i = queryStart; i < queryStart + T; i++) {
+    const [S, E] = input[i].split(" ").map(Number);
+    const res = allPairsDist[S][E];
+    results.push(res === Infinity ? -1 : res);
+  }
+
+  return results.join("\n");
 }
 
 console.log(solution());
