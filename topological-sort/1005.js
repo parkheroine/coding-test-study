@@ -10,39 +10,39 @@ const input = fs
   .map((el) => el.split(" ").map(Number));
 
 function solution() {
-  let index = 0;
-  const T = input[index++][0];
+  const T = input[0][0];
+  let index = 1;
+
   const result = [];
 
   for (let t = 0; t < T; t++) {
     const [N, M] = input[index++];
+    const times = [0, ...input[index++]];
     const degree = Array(N + 1).fill(0);
-    const adj = Array.from({ length: N + 1 }, () => []);
+    const nexts = Array.from({ length: N + 1 }, () => []);
+    const dp = Array(N + 1).fill(0);
     const queue = [];
     let head = 0;
-    const times = [0, ...input[index++]];
-    const dp = Array(N + 1).fill(0);
 
     for (let i = index; i < index + M; i++) {
       const [A, B] = input[i];
-      adj[A].push(B);
       degree[B]++;
+      nexts[A].push(B);
     }
-    index = index + M;
-    const W = input[index++];
+    index += M;
 
-    for (let i = 1; i < degree.length; i++) {
+    for (let i = 0; i < degree.length; i++) {
       if (degree[i] === 0) {
         queue.push(i);
+        dp[i] = times[i];
       }
     }
 
     while (head < queue.length) {
       const cur = queue[head++];
-      dp[cur] += times[cur];
 
-      for (const next of adj[cur]) {
-        dp[next] = Math.max(dp[next], dp[cur]);
+      for (const next of nexts[cur]) {
+        dp[next] = Math.max(dp[cur] + times[next], dp[next]);
         degree[next]--;
         if (degree[next] === 0) {
           queue.push(next);
@@ -50,7 +50,8 @@ function solution() {
       }
     }
 
-    result.push(dp[W]);
+    const [targetNum] = input[index++];
+    result.push(dp[targetNum]);
   }
 
   return result.join("\n");
